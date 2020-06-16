@@ -9,4 +9,5 @@ applications:
     annotations:
       prometheus.io/scrape: true
       prometheus.io/port: 2112
+      prometheus.io/path: /metrics
   no-route: true
