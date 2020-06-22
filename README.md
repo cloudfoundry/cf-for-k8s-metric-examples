@@ -18,7 +18,7 @@ Example for `golang`:
 1. `cd go-app-with-metrics`
 2. `cf push`
 
-##### Deploy Prometheus Server
+#### Deploy Prometheus Server
 
 using helm3:
 
