@@ -4,7 +4,7 @@
 
 Setting up metrics in cf-for-k8s involves two steps:
 1. From your app, expose metrics in the Prometheus exposition format
-2. In your app's `manifest.yml`, define the appropriate Prometheus annotations
+1. In your app's `manifest.yml`, define the appropriate Prometheus annotations
 
 This repo provides examples of applications and the appropriate annotations.
 
@@ -14,9 +14,30 @@ This repo provides examples of applications and the appropriate annotations.
 
 Change into your app's root directory and `cf push`
 
-Example for `golang`:
+Example for `golang` and cf7-cli:
 1. `cd go-app-with-metrics`
-2. `cf push`
+1. `cf push`
+
+Alternate method with cf6-cli:
+1. `cd go-app-with-metrics`
+1. `cf push`
+1. Run:
+
+  ```
+  cf curl v3/apps/<APP_GUID> \
+    -X PATCH \
+    -d '{
+      "metadata": {
+        "annotations": {
+          "prometheus.io/scrape": "true",
+          "prometheus.io/port": "2112",
+          "prometheus.io/path": "/metrics"
+        }
+      }
+    }'
+  ```
+1. `cf restage go-app-with-metrics`
+
 
 ##### Verifying it emits metrics
 
