@@ -86,9 +86,9 @@ pods annotated with Prometheus scrape configurations:
     - https://github.com/cloudfoundry/go-buildpack.git
     metadata:
       annotations:
-        prometheus.io/scrape: true
-        prometheus.io/port: 2112
-        prometheus.io/path: /metrics
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "2112"
+        prometheus.io/path: "/metrics"
   ```
 * In a Kubernetes pod manifest:
   ```
@@ -96,7 +96,7 @@ pods annotated with Prometheus scrape configurations:
     template:
       metadata:
         annotations:
-          prometheus.io/scrape: true
-          prometheus.io/port: 2112
-          prometheus.io/path: /metrics
+          prometheus.io/scrape: "true"
+          prometheus.io/port: "2112"
+          prometheus.io/path: "/metrics"
   ```
