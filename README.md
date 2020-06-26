@@ -21,7 +21,7 @@ Example for `golang` and cf7-cli:
 Alternate method with cf6-cli:
 1. `cd go-app-with-metrics`
 1. `cf push`
-1. Run:
+1. Because cf cli 6 does not handle annotations, set them with `cf curl`:
 
   ```
   cf curl /v3/apps/$(cf app go-app-with-metrics --guid) \
@@ -48,12 +48,10 @@ If you have `kubectl` access on your cluster, you can verify that your app is
 emitting metrics by port-forwarding:
 
 ```
-# TODO: is this the right namespace?
-export NAMESPACE="cf-system"
-export POD_NAME="$(k get pods -n $NAMESPACE | grep prometheus-server | awk '{print $1;})"
+export POD_NAME="$(k get pods -n cf-workloads | grep go-app-with-metrics | awk '{print $1;})"
 export PROM_PORT="YOUR_PORT_HERE"
 
-kubectl port-forward -n $NAMESPACE $POD_NAME $PROM_PORT
+kubectl port-forward -n cf-workloads $POD_NAME $PROM_PORT
 
 curl localhost:$PROM_PORT/metrics
 ```
@@ -63,7 +61,7 @@ curl localhost:$PROM_PORT/metrics
 Using helm3:
 
 * `helm repo add stable https://kubernetes-charts.storage.googleapis.com`
-* `helm install <deployment-name> stable/prometheus`
+* `helm install <deployment-name> stable/prometheus -n $NAMESPACE`
     * This installs Prometheus in the default namespace
 * Follow the output to access the Prometheus server
 
