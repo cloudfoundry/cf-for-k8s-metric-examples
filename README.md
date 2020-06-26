@@ -24,7 +24,7 @@ Alternate method with cf6-cli:
 1. Run:
 
   ```
-  cf curl v3/apps/<APP_GUID> \
+  cf curl /v3/apps/$(cf app go-app-with-metrics --guid) \
     -X PATCH \
     -d '{
       "metadata": {
@@ -48,9 +48,12 @@ If you have `kubectl` access on your cluster, you can verify that your app is
 emitting metrics by port-forwarding:
 
 ```
-export POD_NAME="YOUR_POD_NAME_HERE"
+# TODO: is this the right namespace?
+export NAMESPACE="cf-system"
+export POD_NAME="$(k get pods -n $NAMESPACE | grep prometheus-server | awk '{print $1;})"
 export PROM_PORT="YOUR_PORT_HERE"
-kubectl port-forward -n cf-workloads $POD_NAME $PROM_PORT
+
+kubectl port-forward -n $NAMESPACE $POD_NAME $PROM_PORT
 
 curl localhost:$PROM_PORT/metrics
 ```

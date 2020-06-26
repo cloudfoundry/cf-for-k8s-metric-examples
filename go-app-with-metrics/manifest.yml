@@ -4,10 +4,4 @@ applications:
   buildpacks:
   - https://github.com/cloudfoundry/go-buildpack.git
   health-check-type: process
-  instances: 2
-  metadata:
-    annotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/port: "2112"
-      prometheus.io/path: "/metrics"
-  no-route: true
+  instances: 1
