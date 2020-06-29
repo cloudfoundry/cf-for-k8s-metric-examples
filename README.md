@@ -10,25 +10,33 @@ This repo provides examples of applications and the appropriate annotations.
 
 ### Deploying an app with metrics
 
+##### Requirements
+* cf CLI (6.51.0+ or 7.0.0+)
+* a recent [cf-for-k8s deployment](https://github.com/cloudfoundry/cf-for-k8s)
+* helm3
+
 ##### Deploying the app
 
 Change into your app's root directory and `cf push`
 
-Example for `golang` and cf6-cli:
+Example for `golang` using cf CLI:
 1. `cd go-app-with-metrics`
-1. Make sure your manifest.yaml file contains the following annotations (our
-   example app exposes port 2112)
-
-  ```
-      metadata: {
-        annotations: {
-          "prometheus.io/scrape": "true",
-          "prometheus.io/port": "2112",
-          "prometheus.io/path": "/metrics"
-        }
+1. `cf push go-app-with-metrics -u process`
+1. Run:
+```
+cf curl v3/apps/$(cf app go-app-with-metrics --guid) \
+  -X PATCH \
+  -d '{
+    "metadata": {
+      "annotations": {
+        "prometheus.io/scrape": "true",
+        "prometheus.io/port": "2112",
+        "prometheus.io/path": "/metrics"
       }
-  ```
-1. `cf push`
+    }
+  }'
+```
+1. `cf restage go-app-with-metrics`
 
 
 ##### Verifying it emits metrics
@@ -50,7 +58,7 @@ curl localhost:$PROM_PORT/metrics
 
 ### Deploying Prometheus Server
 
-In order for prometheus to sucessfully scrape pods in a TAS-for-k8s cluster,
+In order for prometheus to sucessfully scrape pods in a cf-for-k8s cluster,
 it currently needs the following:
 
 1. Be deployed in namespace that has the label "istio-injection=enabled".
@@ -67,7 +75,7 @@ Using helm3:
 * `helm repo add stable https://kubernetes-charts.storage.googleapis.com`
 * `helm install <release-name> stable/prometheus -n cf-system --set server.podLabels.what\-am\-i=prometheus`
     * This installs Prometheus in a compatable namespace
-    * This adds the pod that the network policy matches
+    * This adds the label that matches the network policy
 * Follow the output to access the Prometheus server
 
 The output should look something like:
@@ -78,31 +86,3 @@ Get the Prometheus server URL by running these commands in the same shell:
 ```
 * After setting up the port forwarding, access the Prometheus web UI by going to localhost:9090
 
-##### Default Metrics Availability
-
-Metrics should be included for all Prometheus nodes, the API node, and any
-pods annotated with Prometheus scrape configurations:
-
-* In a Cloud Foundry manifest:
-  ```
-  ---
-  applications:
-  - name: go-app-with-metrics
-    buildpacks:
-    - https://github.com/cloudfoundry/go-buildpack.git
-    metadata:
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "2112"
-        prometheus.io/path: "/metrics"
-  ```
-* In a Kubernetes pod manifest:
-  ```
-  spec:
-    template:
-      metadata:
-        annotations:
-          prometheus.io/scrape: "true"
-          prometheus.io/port: "2112"
-          prometheus.io/path: "/metrics"
-  ```

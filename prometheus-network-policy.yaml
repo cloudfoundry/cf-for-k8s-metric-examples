@@ -12,7 +12,7 @@ spec:
   - from:
     - namespaceSelector:
         matchLabels:
-          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+          name: cf-system
       podSelector:
         matchLabels:
           what-am-i: prometheus
