@@ -1,0 +1,11 @@
+---
+applications:
+- name: go-app-with-metrics
+  health-check-type: process
+  instances: 2
+  metadata:
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "2112"
+      prometheus.io/path: "/metrics"
+  no-route: true

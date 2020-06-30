@@ -11,7 +11,7 @@ This repo provides examples of applications and the appropriate annotations.
 ### Deploying an app with metrics
 
 ##### Requirements
-* cf CLI (6.51.0+ or 7.0.0+)
+* cf CLI (7.0.0+)
 * a recent [cf-for-k8s deployment](https://github.com/cloudfoundry/cf-for-k8s)
 * helm3
 
@@ -21,23 +21,7 @@ Change into your app's root directory and `cf push`
 
 Example for `golang` using cf CLI:
 1. `cd go-app-with-metrics`
-1. `cf push go-app-with-metrics -u process`
-1. Run:
-```
-cf curl v3/apps/$(cf app go-app-with-metrics --guid) \
-  -X PATCH \
-  -d '{
-    "metadata": {
-      "annotations": {
-        "prometheus.io/scrape": "true",
-        "prometheus.io/port": "2112",
-        "prometheus.io/path": "/metrics"
-      }
-    }
-  }'
-```
-1. `cf restage go-app-with-metrics`
-
+1. `cf push`
 
 ##### Verifying it emits metrics
 
@@ -86,3 +70,29 @@ Get the Prometheus server URL by running these commands in the same shell:
 ```
 * After setting up the port forwarding, access the Prometheus web UI by going to localhost:9090
 
+##### Default Metrics Availability
+
+Metrics should be included for all Prometheus nodes, the API node, and any
+pods annotated with Prometheus scrape configurations:
+
+* In a Cloud Foundry manifest:
+  ```
+  ---
+  applications:
+  - name: go-app-with-metrics
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "2112"
+        prometheus.io/path: "/metrics"
+  ```
+* In a Kubernetes pod manifest:
+  ```
+  spec:
+    template:
+      metadata:
+        annotations:
+          prometheus.io/scrape: "true"
+          prometheus.io/port: "2112"
+          prometheus.io/path: "/metrics"
+  ```
