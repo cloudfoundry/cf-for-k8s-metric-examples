@@ -32,7 +32,7 @@ If you have `kubectl` access on your cluster, you can verify that your app is
 emitting metrics by port-forwarding:
 
 ```
-export POD_NAME="$(k get pods -n cf-workloads | grep go-app-with-metrics | awk '{print $1;})"
+export POD_NAME="$(k get pods -n cf-workloads | grep go-app-with-metrics | awk '{print $1}')"
 export PROM_PORT="YOUR_PORT_HERE"
 
 kubectl port-forward -n cf-workloads $POD_NAME $PROM_PORT
@@ -50,7 +50,11 @@ it currently needs the following:
    (the recommended namespace is cf-system)
 1. Have a network policy in place allows scraping to succeed on the prometheus
    server pod. This will use label matching. In our example, we create a label
-   called `what-am-i=prometheus`
+   called `what-am-i=prometheus` on the Prometheus server as well as a new
+   label on the cf-system namespace `cf-for-k8s.cloudfoundry.org/cf-system-ns:
+   ""` (If using cf-system, there is an [outstanding issue](https://github.com/cloudfoundry/cf-for-k8s/issues/261)
+   to add this label.
+   In the meantime you can directly edit the namespace.
 
 Using helm3:
 
