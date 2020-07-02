@@ -46,20 +46,21 @@ In order for prometheus to sucessfully scrape pods in a cf-for-k8s cluster,
 it currently needs the following:
 
 1. Be deployed in namespace that has the label "istio-injection=enabled".
-   This injects istio sidecars onto prometheus's pods.
-   (the recommended namespace is cf-system)
-1. Have a network policy in place allows scraping to succeed on the prometheus
-   server pod. This will use label matching. In our example, we create a label
-   called `what-am-i=prometheus` on the Prometheus server as well as a new
-   label on the cf-system namespace `cf-for-k8s.cloudfoundry.org/cf-system-ns:
-   ""` (If using cf-system, there is an [outstanding issue](https://github.com/cloudfoundry/cf-for-k8s/issues/261)
-   to add this label.
-   In the meantime you can directly edit the namespace.
+   This injects istio sidecars onto prometheus's pods. The recommended namespace is `cf-system`
+1. Have a [network policy](https://github.com/cloudfoundry/cf-for-k8s-metric-examples/blob/master/prometheus-network-policy.yaml)
+   in place that allows prometheus to scrape that namespace.
+
+The network policy requires two new labels:
+* a label on the prometheus server's pod: `what-am-i=prometheus`
+* a label on the cf-system namespace: `cf-for-k8s.cloudfoundry.org/cf-system-ns: ""`
+* If using cf-system, there is an [outstanding issue](https://github.com/cloudfoundry/cf-for-k8s/issues/261)
+to add the namespace label in the cf-for-k8s code.
 
 Using helm3:
 
 * `kubectl apply -f prometheus-network-policy.yaml` (this adds the network
   policy referenced above)
+* `kubectl edit namespace cf-system` (and add the label above)
 * `helm repo add stable https://kubernetes-charts.storage.googleapis.com`
 * `helm install <release-name> stable/prometheus -n cf-system --set server.podLabels.what\-am\-i=prometheus`
     * This installs Prometheus in a compatable namespace
