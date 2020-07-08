@@ -1,18 +1,19 @@
+#! can throw away changes...was for testing
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-prometheus-scrape
+  name: allow-cf-workloads-egress
   namespace: cf-workloads
 spec:
   podSelector: {}
   policyTypes:
-  - Ingress
-  ingress:
-  - from:
+  - Egress
+  egress:
+  - to:
     - namespaceSelector:
         matchLabels:
-          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
-      podSelector:
+          istio-injection: enabled
+    - namespaceSelector:
         matchLabels:
-          what-am-i: prometheus
+          istio-injection: disabled
