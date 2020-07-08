@@ -62,7 +62,7 @@ Using helm3:
   policy referenced above)
 * `kubectl edit namespace cf-system` (and add the label above)
 * `helm repo add stable https://kubernetes-charts.storage.googleapis.com`
-* `helm install <release-name> stable/prometheus -n cf-system --set server.podLabels.what\-am\-i=prometheus`
+* `helm install cf-for-k8s-prometheus stable/prometheus -n cf-system --set server.podLabels.what\-am\-i=prometheus`
     * This installs Prometheus in a compatable namespace
     * This adds the label that matches the network policy
 * Follow the output to access the Prometheus server
@@ -70,8 +70,8 @@ Using helm3:
 The output should look something like:
 ```
 Get the Prometheus server URL by running these commands in the same shell:
-  export POD_NAME=$(kubectl get pods --namespace default -l "app=prometheus,component=server" -o jsonpath="{.items[0].metadata.name}")
-  kubectl --namespace default port-forward $POD_NAME 9090
+  export POD_NAME=$(kubectl get pods --namespace cf-system -l "app=prometheus,component=server" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace cf-system port-forward $POD_NAME 9090
 ```
 * After setting up the port forwarding, access the Prometheus web UI by going to localhost:9090
 
