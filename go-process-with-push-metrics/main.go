@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/push"
@@ -15,7 +16,12 @@ func main() {
 
 	pushedMetric.Add(1)
 
-	err := push.New("localhost:9091", "pushed-metrics").Collector(pushedMetric).Push()
+	pushGatewayAddr := os.Getenv("PUSHGATEWAY_ADDR")
+	if pushGatewayAddr == "" {
+		pushGatewayAddr = "localhost:9091"
+	}
+
+	err := push.New(pushGatewayAddr, "pushed-metrics").Collector(pushedMetric).Push()
 	if err != nil {
 		fmt.Printf("error: %s", err)
 		panic(err)

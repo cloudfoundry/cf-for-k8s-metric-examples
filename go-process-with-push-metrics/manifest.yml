@@ -4,3 +4,5 @@ applications:
   health-check-type: process
   instances: 1
   no-route: true
+  env:
+    PUSHGATEWAY_ADDR: "10.47.252.199:9091"
