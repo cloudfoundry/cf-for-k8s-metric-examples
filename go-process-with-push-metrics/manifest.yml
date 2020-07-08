@@ -1,0 +1,6 @@
+---
+applications:
+- name: go-process-with-push-metrics
+  health-check-type: process
+  instances: 1
+  no-route: true
