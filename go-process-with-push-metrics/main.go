@@ -8,10 +8,16 @@ import (
 )
 
 func main() {
-	completionTime := prometheus.NewGauge(prometheus.GaugeOpts{
-		Name: "db_backup_last_completion_timestamp_seconds",
-		Help: "The timestamp of the last successful completion of a DB backup.",
+	pushedMetric := prometheus.NewCounter(prometheus.CounterOpts{
+		Name: "pushed_metric",
+		Help: "Testing that a metric can be pushed to the gateway.",
 	})
-	err := push.New("pushgateway-test-prometheus-pushgateway.cf-system.svc.cluster.local:9091", "test").Collector(completionTime).Push()
-	fmt.Printf("error: %s", err)
+
+	pushedMetric.Add(1)
+
+	err := push.New("localhost:9091", "pushed-metrics").Collector(pushedMetric).Push()
+	if err != nil {
+		fmt.Printf("error: %s", err)
+		panic(err)
+	}
 }
