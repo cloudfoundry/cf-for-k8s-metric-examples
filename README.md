@@ -53,8 +53,6 @@ it currently needs the following:
 The network policy requires two new labels:
 * a label on the prometheus server's pod: `what-am-i=prometheus`
 * a label on the cf-system namespace: `cf-for-k8s.cloudfoundry.org/cf-system-ns: ""`
-* If using cf-system, there is an [outstanding issue](https://github.com/cloudfoundry/cf-for-k8s/issues/261)
-to add the namespace label in the cf-for-k8s code.
 
 Using helm3:
 
@@ -63,7 +61,7 @@ Using helm3:
 * `kubectl edit namespace cf-system` (and add the label above)
 * `helm repo add stable https://kubernetes-charts.storage.googleapis.com`
 * `helm install cf-for-k8s-prometheus stable/prometheus -n cf-system --set server.podLabels.what\-am\-i=prometheus`
-    * This installs Prometheus in a compatable namespace
+    * This installs Prometheus in a compatible namespace
     * This adds the label that matches the network policy
 * Follow the output to access the Prometheus server
 
