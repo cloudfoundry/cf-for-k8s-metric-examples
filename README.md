@@ -47,22 +47,20 @@ it currently needs the following:
 
 1. Be deployed in namespace that has the label "istio-injection=enabled".
    This injects istio sidecars onto prometheus's pods. The recommended namespace is `cf-system`.
-1. Have a network policy in place that allows prometheus to scrape your app's
-   pod.
+1. Have a network policy in place that allows prometheus to scrape your app's pod.
 1. Have the necessary certs available in prometheus's istio sidecar.
 
 Because of the complexity of these requirements, we recommend using
-[cf-k8s-prometheus](https://github.com/cloudfoundry/cf-k8s-prometheus#how-to-deploy-in-cf-for-k8s)
+[cf-k8s-prometheus](https://github.com/cloudfoundry/cf-k8s-prometheus#how-to-deploy-in-cf-for-k8s).
 
-* Follow the output to access the Prometheus server
+To set up port forwarding, run the following commands:
 
-The output should look something like:
 ```
-Get the Prometheus server URL by running these commands in the same shell:
   export POD_NAME=$(kubectl get pods --namespace cf-system -l "metrics=prometheus,component=server" -o jsonpath="{.items[0].metadata.name}")
   kubectl --namespace cf-system port-forward $POD_NAME 9090
 ```
-* After setting up the port forwarding, access the Prometheus web UI by going to localhost:9090
+
+After setting up the port forwarding, access the Prometheus web UI by going to localhost:9090
 
 ##### Default Metrics Availability
 
