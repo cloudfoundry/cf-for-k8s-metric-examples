@@ -46,36 +46,27 @@ In order for prometheus to sucessfully scrape pods in a cf-for-k8s cluster,
 it currently needs the following:
 
 1. Be deployed in namespace that has the label "istio-injection=enabled".
-   This injects istio sidecars onto prometheus's pods. The recommended namespace is `cf-system`
-1. Have a [network policy](https://github.com/cloudfoundry/cf-for-k8s-metric-examples/blob/master/prometheus-network-policy.yaml)
-   in place that allows prometheus to scrape that namespace.
+   This injects istio sidecars onto prometheus's pods. The recommended namespace is `cf-system`.
+1. Have a network policy in place that allows prometheus to scrape your app's
+   pod.
+1. Have the necessary certs available in prometheus's istio sidecar.
 
-The network policy requires two new labels:
-* a label on the prometheus server's pod: `what-am-i=prometheus`
-* a label on the cf-system namespace: `cf-for-k8s.cloudfoundry.org/cf-system-ns: ""`
+Because of the complexity of these requirements, we recommend using
+[cf-k8s-prometheus](https://github.com/cloudfoundry/cf-k8s-prometheus#how-to-deploy-in-cf-for-k8s)
 
-Using helm3:
-
-* `kubectl apply -f prometheus-network-policy.yaml` (this adds the network
-  policy referenced above)
-* `kubectl edit namespace cf-system` (and add the label above)
-* `helm repo add stable https://kubernetes-charts.storage.googleapis.com`
-* `helm install cf-for-k8s-prometheus stable/prometheus -n cf-system --set server.podLabels.what\-am\-i=prometheus`
-    * This installs Prometheus in a compatible namespace
-    * This adds the label that matches the network policy
 * Follow the output to access the Prometheus server
 
 The output should look something like:
 ```
 Get the Prometheus server URL by running these commands in the same shell:
-  export POD_NAME=$(kubectl get pods --namespace cf-system -l "app=prometheus,component=server" -o jsonpath="{.items[0].metadata.name}")
+  export POD_NAME=$(kubectl get pods --namespace cf-system -l "metrics=prometheus,component=server" -o jsonpath="{.items[0].metadata.name}")
   kubectl --namespace cf-system port-forward $POD_NAME 9090
 ```
 * After setting up the port forwarding, access the Prometheus web UI by going to localhost:9090
 
 ##### Default Metrics Availability
 
-Metrics should be included for all Prometheus nodes, the API node, and any
+Metric sshould be included for all Prometheus nodes, the API node, and any
 pods annotated with Prometheus scrape configurations:
 
 * In a Cloud Foundry manifest:
