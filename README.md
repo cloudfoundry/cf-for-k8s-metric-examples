@@ -64,7 +64,7 @@ After setting up the port forwarding, access the Prometheus web UI by going to l
 
 ##### Default Metrics Availability
 
-Metric sshould be included for all Prometheus nodes, the API node, and any
+Metrics should be included for all Prometheus nodes, the API node, and any
 pods annotated with Prometheus scrape configurations:
 
 * In a Cloud Foundry manifest:
