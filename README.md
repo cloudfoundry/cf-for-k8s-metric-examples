@@ -13,7 +13,6 @@ This repo provides examples of applications and the appropriate annotations.
 ##### Requirements
 * cf CLI (7.0.0+)
 * a recent [cf-for-k8s deployment](https://github.com/cloudfoundry/cf-for-k8s)
-* helm3
 
 ##### Deploying the app
 
