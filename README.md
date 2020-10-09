@@ -31,7 +31,7 @@ If you have `kubectl` access on your cluster, you can verify that your app is
 emitting metrics by port-forwarding:
 
 ```
-export POD_NAME="$(k get pods -n cf-workloads | grep go-app-with-metrics | awk '{print $1}')"
+export POD_NAME="$(k get pods -n cf-workloads | grep go-app-with-metrics | awk 'NR==1{print $1}')"
 export PROM_PORT="YOUR_PORT_HERE"
 
 kubectl port-forward -n cf-workloads $POD_NAME $PROM_PORT
