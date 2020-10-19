@@ -87,3 +87,8 @@ pods annotated with Prometheus scrape configurations:
           prometheus.io/port: "2112"
           prometheus.io/path: "/metrics"
   ```
+
+### Have a question or feedback, reach out to us
+
+Reach out to us in the Cloud Foundry Slack channel [#logging-and-metrics](https://cloudfoundry.slack.com/archives/CUW93AF3M).
+To request a response during Mountain Time business hours, tag your message with @interrupt.
